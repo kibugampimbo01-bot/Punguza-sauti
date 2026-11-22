@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - PUNGUZA SAUTI</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { margin: 0; background: #090d16; color: #f8fafc; padding: 16px; }
+    .container { max-width: 540px; margin: 0 auto; }
+    .header { text-align: center; padding: 16px 0; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
+    .header h1 { margin: 0; font-size: 22px; color: #f59e0b; }
+    .card { background: #1e293b; border-radius: 14px; padding: 18px; margin-bottom: 16px; border: 1px solid #334155; }
+    .card h2 { margin: 0 0 12px; font-size: 16px; color: #38bdf8; }
+    label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 6px; }
+    input, textarea { width: 100%; padding: 11px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 14px; margin-bottom: 12px; }
+    button { width: 100%; padding: 12px; border: none; border-radius: 10px; background: #0284c7; color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; }
+    .btn-green { background: #16a34a; margin-top: 6px; }
+    .item-box { background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #334155; font-size: 13px; line-height: 1.5; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>ADMIN PANEL • PUNGUZA SAUTI</h1>
+  </div>
+
+  <!-- PIN YA ADMIN -->
+  <div id="pinCard" class="card">
+    <h2>Ingiza PIN ya Msimamizi</h2>
+    <input type="password" id="adminPin" placeholder="Weka PIN (PIN ya awali: 2026)">
+    <button onclick="checkPin()">Fungua Jopo la Admin</button>
+  </div>
+
+  <!-- JOPO KUU LA ADMIN -->
+  <div id="adminPanel" class="hidden">
+    <!-- MIPANGILIO YA NAMBA ZA MALIPO NA MAKATO -->
+    <div class="card">
+      <h2>1. Mipangilio ya Malipo & Asilimia</h2>
+      <label>Namba Zako za Kupokea Malipo (Zitaonekana kwa wateja)</label>
+      <textarea id="payDetailsInput" rows="4" placeholder="Mfano:&#10;M-Pesa Lipa Namba: 5566778 (Jina: BONGO LINK)&#10;Tigo Pesa: 0712 000 000"></textarea>
+      <label>Asilimia Yako ya Makato (%)</label>
+      <input type="number" id="feePercentInput" placeholder="Mfano: 15">
+      <button onclick="saveSettings()">Hifadhi Mipangilio</button>
+    </div>
+
+    <!-- HAKIKI MALIPO YALIYOINGIA -->
+    <div class="card">
+      <h2>2. Malipo Yanayosubiri Uhakiki (Pending)</h2>
+      <div id="pendingPaymentsList">Inapakia...</div>
+    </div>
+
+    <!-- MAOMBI YA WITHDRAW YA CREATORS -->
+    <div class="card">
+      <h2>3. Maombi ya Kutoa Pesa (Withdrawals)</h2>
+      <div id="pendingWithdrawsList">Inapakia...</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDGO1CbF7SamuFLH2JLczAlOw3uoEwURlg",
+    authDomain: "bongo-pesalink.firebaseapp.com",
+    projectId: "bongo-pesalink",
+    storageBucket: "bongo-pesalink.firebasestorage.app",
+    messagingSenderId: "987154176441",
+    appId: "1:987154176441:web:b13e754ece8996ca737e68"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // PIN YAKO YA SIRI (Badilisha namba '2026' ukitaka kuweka PIN yako binafsi)
+  const SECRET_PIN = "2026";
+
+  window.checkPin = async () => {
+    const pin = document.getElementById("adminPin").value.trim();
+    if (pin !== SECRET_PIN) return alert("PIN si sahihi!");
+    document.getElementById("pinCard").classList.add("hidden");
+    document.getElementById("adminPanel").classList.remove("hidden");
+    loadAdminData();
+  };
+
+  async function loadAdminData() {
+    // 1. Pakua Settings
+    const setSnap = await getDoc(doc(db, "settings", "config"));
+    if (setSnap.exists()) {
+      document.getElementById("payDetailsInput").value = setSnap.data().paymentDetails || "";
+      document.getElementById("feePercentInput").value = setSnap.data().feePercent ?? 15;
+    }
+
+    // 2. Sikiliza Malipo Mapya (Real-time)
+    const qPay = query(collection(db, "payments"), where("status", "==", "pending"));
+    onSnapshot(qPay, (snap) => {
+      const div = document.getElementById("pendingPaymentsList");
+      div.innerHTML = "";
+      if (snap.empty) {
+        div.innerHTML = "<p style='font-size:13px; color:#94a3b8;'>Hakuna malipo mapya yanayosubiri.</p>";
+        return;
+      }
+      snap.forEach((d) => {
+        const p = d.data();
+        div.innerHTML += `
+          <div class="item-box">
+            <b>Video:</b> ${p.videoTitle}<br>
+            <b>Kiasi:</b> TSh ${Number(p.amount).toLocaleString()}<br>
+            <b>Namba ya Mteja:</b> ${p.buyerPhone}<br>
+            <b>Muamala (TxID):</b> <span style="color:#facc15;">${p.txId}</span><br>
+            <b>Creator:</b> ${p.creatorPhone}
+            <button class="btn-green" onclick="verifyPayment('${d.id}')">✔ Thibitisha Muamala Umeingia</button>
+          </div>
+        `;
+      });
+    });
+
+    // 3. Sikiliza Maombi ya Withdraw
+    const qWith = query(collection(db, "withdrawals"), where("status", "==", "pending"));
+    onSnapshot(qWith, (snap) => {
+      const div = document.getElementById("pendingWithdrawsList");
+      div.innerHTML = "";
+      if (snap.empty) {
+        div.innerHTML = "<p style='font-size:13px; color:#94a3b8;'>Hakuna maombi ya withdraw kwa sasa.</p>";
+        return;
+      }
+      snap.forEach((d) => {
+        const w = d.data();
+        div.innerHTML += `
+          <div class="item-box">
+            <b>Creator:</b> ${w.creatorName} (${w.creatorPhone})<br>
+            <b>Kiasi Anachotoa:</b> <span style="color:#4ade80; font-weight:bold;">TSh ${Number(w.amount).toLocaleString()}</span><br>
+            <button class="btn-green" onclick="markWithdrawPaid('${d.id}')">✔ Nimeshamtumia Pesa (Mark Paid)</button>
+          </div>
+        `;
+      });
+    });
+  }
+
+  window.saveSettings = async () => {
+    const paymentDetails = document.getElementById("payDetailsInput").value.trim();
+    const feePercent = Number(document.getElementById("feePercentInput").value);
+    await setDoc(doc(db, "settings", "config"), { paymentDetails, feePercent }, { merge: true });
+    alert("Mipangilio imehifadhiwa!");
+  };
+
+  window.verifyPayment = async (id) => {
+    await updateDoc(doc(db, "payments", id), { status: "verified", verifiedAt: Date.now() });
+    alert("Muamala umethibitishwa! Video imefunguka kwa mteja na salio limeongezeka kwa creator.");
+  };
+
+  window.markWithdrawPaid = async (id) => {
+    await updateDoc(doc(db, "withdrawals", id), { status: "paid", paidAt: Date.now() });
+    alert("Malipo ya creator yamerekodiwa kuwa yamekamilika!");
+  };
+</script>
+</body>
+</html>
