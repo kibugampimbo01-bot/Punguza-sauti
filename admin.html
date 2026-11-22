@@ -3,96 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUNGUZA SAUTI - Bongo Pesa Link</title>
+  <title>Admin Panel - PUNGUZA SAUTI</title>
   <style>
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
     body { margin: 0; background: #ffffff; color: #0f172a; padding: 16px; }
-    .container { max-width: 480px; margin: 0 auto; }
-    .header { text-align: center; padding: 20px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px; }
-    .header h1 { margin: 0; font-size: 25px; color: #0284c7; font-weight: 800; letter-spacing: 0.5px; }
-    .header p { margin: 5px 0 0; font-size: 13px; color: #475569; font-weight: 500; }
+    .container { max-width: 540px; margin: 0 auto; }
+    .header { text-align: center; padding: 18px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px; }
+    .header h1 { margin: 0; font-size: 22px; color: #0284c7; font-weight: 800; }
     .card { background: #ffffff; border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05); }
-    .card h2 { margin: 0 0 14px; font-size: 17px; color: #0f172a; font-weight: 700; }
+    .card h2 { margin: 0 0 12px; font-size: 16px; color: #0f172a; font-weight: 700; }
     label { display: block; font-size: 13px; color: #334155; font-weight: 600; margin-bottom: 6px; }
-    input { width: 100%; padding: 13px; border-radius: 10px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 15px; margin-bottom: 14px; }
-    input:focus { outline: none; border-color: #0284c7; background: #ffffff; }
-    button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #2563eb); color: #ffffff; font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); }
-    button:active { opacity: 0.9; transform: scale(0.99); }
-    .btn-withdraw { background: linear-gradient(135deg, #16a34a, #059669); box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25); }
-    .btn-logout { width: auto; padding: 6px 14px; font-size: 12px; background: #f1f5f9; color: #334155; box-shadow: none; border: 1px solid #cbd5e1; }
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    .stat-box-salio { background: #f0f9ff; padding: 16px; border-radius: 12px; text-align: center; border: 1.5px solid #bae6fd; }
-    .stat-box-salio span { display: block; font-size: 12px; color: #0369a1; font-weight: 600; }
-    .stat-box-salio strong { display: block; font-size: 20px; color: #0284c7; margin-top: 4px; font-weight: 800; }
-    .stat-box-wateja { background: #f0fdf4; padding: 16px; border-radius: 12px; text-align: center; border: 1.5px solid #bbf7d0; }
-    .stat-box-wateja span { display: block; font-size: 12px; color: #15803d; font-weight: 600; }
-    .stat-box-wateja strong { display: block; font-size: 20px; color: #16a34a; margin-top: 4px; font-weight: 800; }
-    .link-box { background: #f8fafc; padding: 13px; border-radius: 10px; border: 1.5px dashed #0284c7; word-break: break-all; font-size: 13px; color: #0369a1; font-weight: 600; margin-bottom: 12px; }
+    input, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #0f172a; font-size: 14px; margin-bottom: 12px; }
+    input:focus, textarea:focus { outline: none; border-color: #0284c7; background: #ffffff; }
+    button { width: 100%; padding: 13px; border: none; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #2563eb); color: #ffffff; font-weight: 700; font-size: 14px; cursor: pointer; }
+    .btn-green { background: linear-gradient(135deg, #16a34a, #059669); margin-top: 8px; }
+    .item-box { background: #f8fafc; padding: 14px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #cbd5e1; font-size: 13px; color: #0f172a; line-height: 1.6; }
     .hidden { display: none; }
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-    .badge-pending { background: #fef3c7; color: #b45309; }
-    .badge-paid { background: #dcfce7; color: #15803d; }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <h1>PUNGUZA SAUTI</h1>
-    <p>Bongo Pesa Link • Weka Link, Pokea Pesa</p>
+    <h1>ADMIN PANEL • PUNGUZA SAUTI</h1>
   </div>
 
-  <!-- SEHEMU YA KUINGIA (LOGIN) -->
-  <div id="loginSection" class="card">
-    <h2>Ingia Kwenye Akaunti Yako</h2>
-    <label>Jina Lako au Brand Yako</label>
-    <input type="text" id="creatorName" placeholder="Mfano: Juma TV">
-    <label>Namba Yako ya Simu (Ya Kupokea Pesa)</label>
-    <input type="tel" id="creatorPhone" placeholder="Mfano: 0755123456">
-    <button onclick="loginCreator()">Ingia / Fungua Akaunti</button>
+  <!-- PIN YA ADMIN -->
+  <div id="pinCard" class="card">
+    <h2>Ingiza PIN ya Msimamizi</h2>
+    <input type="password" id="adminPin" placeholder="Weka PIN (PIN ya awali: 2026)">
+    <button onclick="checkPin()">Fungua Jopo la Admin</button>
   </div>
 
-  <!-- DASHBOARD YA CREATOR -->
-  <div id="dashboardSection" class="hidden">
-    <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <h2 style="margin:0;" id="welcomeText">Karibu</h2>
-        <button onclick="logout()" class="btn-logout">Toka</button>
-      </div>
-      <div class="stats">
-        <div class="stat-box-salio">
-          <span>Salio Lako (Net)</span>
-          <strong id="netBalance">TSh 0</strong>
-        </div>
-        <div class="stat-box-wateja">
-          <span>Waliolipia</span>
-          <strong id="totalSales">0</strong>
-        </div>
-      </div>
-      <p style="font-size:12px; color:#475569; margin:0;">Makato ya mfumo: <b style="color:#0f172a;" id="feeText">10%</b>. Salio linaloonekana tayari limeshakatwa makato.</p>
+  <!-- JOPO KUU LA ADMIN -->
+  <div id="adminPanel" class="hidden">
+    <!-- MIPANGILIO YA NAMBA ZA MALIPO NA MAKATO -->
+    <div class="card" style="border-top: 4px solid #0284c7;">
+      <h2>1. Mipangilio ya Malipo & Asilimia</h2>
+      <label>Namba Zako za Kupokea Malipo (Zitaonekana kwa wateja)</label>
+      <textarea id="payDetailsInput" rows="4" placeholder="Mfano:&#10;M-Pesa Lipa Namba: 5566778 (Jina: BONGO LINK)&#10;Tigo Pesa: 0712 000 000"></textarea>
+      <label>Asilimia Yako ya Makato (%)</label>
+      <input type="number" id="feePercentInput" placeholder="Mfano: 10">
+      <button onclick="saveSettings()">Hifadhi Mipangilio</button>
     </div>
 
-    <!-- LINK YAKO YA MALIPO -->
-    <div class="card">
-      <h2>Link Yako ya Kupokea Malipo</h2>
-      <p style="font-size:13px; color:#475569; margin-top:0;">Nakili link hii na uiweke kwenye page au post zako ili wateja walipie:</p>
-      <div class="link-box" id="myPersonalLink">Inatengeneza link...</div>
-      <button onclick="copyMyLink()">Nakili (Copy) Link Yako</button>
+    <!-- HAKIKI MALIPO YALIYOINGIA -->
+    <div class="card" style="border-top: 4px solid #f59e0b;">
+      <h2>2. Malipo Yanayosubiri Uhakiki (Pending)</h2>
+      <div id="pendingPaymentsList">Inapakia...</div>
     </div>
 
-    <!-- OMBA KUTOA PESA (WITHDRAW) -->
+    <!-- MAOMBI YA WITHDRAW YA CREATORS -->
     <div class="card" style="border-top: 4px solid #16a34a;">
-      <h2 style="color:#15803d;">Toa Pesa (Withdraw)</h2>
-      <label>Kiasi Unachotoa (TSh)</label>
-      <input type="number" id="withdrawAmount" placeholder="Mfano: 5000">
-      <button class="btn-withdraw" onclick="requestWithdraw()">Omba Kutumiwa Pesa</button>
-      <div id="withdrawHistory" style="margin-top:14px;"></div>
+      <h2>3. Maombi ya Kutoa Pesa (Withdrawals)</h2>
+      <div id="pendingWithdrawsList">Inapakia...</div>
     </div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDGO1CbF7SamuFLH2JLczAlOw3uoEwURlg",
@@ -106,113 +76,83 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  let currentPhone = localStorage.getItem("bps_phone") || "";
-  let currentName = localStorage.getItem("bps_name") || "";
-  let platformFeePercent = 10;
-  let availableNetBalance = 0;
-  let personalPayLink = "";
+  const SECRET_PIN = "2026";
 
-  window.loginCreator = async () => {
-    const name = document.getElementById("creatorName").value.trim();
-    const phone = document.getElementById("creatorPhone").value.trim().replace(/\s+/g, "");
-    if (!name || phone.length < 9) return alert("Weka jina na namba sahihi ya simu!");
-    localStorage.setItem("bps_phone", phone);
-    localStorage.setItem("bps_name", name);
-    currentPhone = phone;
-    currentName = name;
-    await setDoc(doc(db, "creators", phone), { name, phone, updatedAt: Date.now() }, { merge: true });
-    initDashboard();
+  window.checkPin = async () => {
+    const pin = document.getElementById("adminPin").value.trim();
+    if (pin !== SECRET_PIN) return alert("PIN si sahihi!");
+    document.getElementById("pinCard").classList.add("hidden");
+    document.getElementById("adminPanel").classList.remove("hidden");
+    loadAdminData();
   };
 
-  window.logout = () => {
-    localStorage.removeItem("bps_phone");
-    localStorage.removeItem("bps_name");
-    location.reload();
-  };
-
-  async function loadSettings() {
-    const snap = await getDoc(doc(db, "settings", "config"));
-    if (snap.exists() && snap.data().feePercent !== undefined) {
-      platformFeePercent = Number(snap.data().feePercent);
+  async function loadAdminData() {
+    const setSnap = await getDoc(doc(db, "settings", "config"));
+    if (setSnap.exists()) {
+      document.getElementById("payDetailsInput").value = setSnap.data().paymentDetails || "";
+      document.getElementById("feePercentInput").value = setSnap.data().feePercent ?? 10;
     }
-    document.getElementById("feeText").innerText = platformFeePercent + "%";
-  }
 
-  async function initDashboard() {
-    if (!currentPhone) return;
-    document.getElementById("loginSection").classList.add("hidden");
-    document.getElementById("dashboardSection").classList.remove("hidden");
-    document.getElementById("welcomeText").innerText = "Habari, " + currentName;
-
-    const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1);
-    personalPayLink = `${baseUrl}watch.html?c=${encodeURIComponent(currentPhone)}`;
-    document.getElementById("myPersonalLink").innerText = personalPayLink;
-
-    await loadSettings();
-    await loadCreatorData();
-  }
-
-  async function loadCreatorData() {
-    const qPay = query(collection(db, "payments"), where("creatorPhone", "==", currentPhone), where("status", "==", "verified"));
-    const paySnap = await getDocs(qPay);
-    let grossTotal = 0;
-    let count = 0;
-    paySnap.forEach((p) => {
-      grossTotal += Number(p.data().amount || 0);
-      count++;
-    });
-
-    const netEarned = Math.floor(grossTotal * ((100 - platformFeePercent) / 100));
-
-    const qWith = query(collection(db, "withdrawals"), where("creatorPhone", "==", currentPhone));
-    const withSnap = await getDocs(qWith);
-    let withdrawnTotal = 0;
-    const withDiv = document.getElementById("withdrawHistory");
-    withDiv.innerHTML = "";
-
-    withSnap.forEach((w) => {
-      const wd = w.data();
-      if (wd.status !== "rejected") {
-        withdrawnTotal += Number(wd.amount || 0);
+    const qPay = query(collection(db, "payments"), where("status", "==", "pending"));
+    onSnapshot(qPay, (snap) => {
+      const div = document.getElementById("pendingPaymentsList");
+      div.innerHTML = "";
+      if (snap.empty) {
+        div.innerHTML = "<p style='font-size:13px; color:#64748b;'>Hakuna malipo mapya yanayosubiri.</p>";
+        return;
       }
-      const badgeClass = wd.status === "paid" ? "badge-paid" : "badge-pending";
-      const statusText = wd.status === "paid" ? "IMELIPWA" : "INASUBIRI";
-      withDiv.innerHTML += `
-        <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; color:#0f172a; font-weight:600; padding:10px 0; border-top:1px solid #e2e8f0;">
-          <span>TSh ${Number(wd.amount).toLocaleString()}</span>
-          <span class="badge ${badgeClass}">${statusText}</span>
-        </div>
-      `;
+      snap.forEach((d) => {
+        const p = d.data();
+        div.innerHTML += `
+          <div class="item-box">
+            <b>Maelezo:</b> ${p.videoTitle}<br>
+            <b>Kiasi:</b> <span style="color:#0284c7; font-weight:bold;">TSh ${Number(p.amount).toLocaleString()}</span><br>
+            <b>Namba ya Mteja:</b> ${p.buyerPhone}<br>
+            <b>Muamala (TxID):</b> <span style="background:#fef3c7; color:#b45309; padding:2px 6px; border-radius:4px; font-weight:bold;">${p.txId}</span><br>
+            <b>Creator:</b> ${p.creatorPhone}
+            <button class="btn-green" onclick="verifyPayment('${d.id}')">✔ Thibitisha Muamala Umeingia</button>
+          </div>
+        `;
+      });
     });
 
-    availableNetBalance = Math.max(0, netEarned - withdrawnTotal);
-    document.getElementById("netBalance").innerText = "TSh " + availableNetBalance.toLocaleString();
-    document.getElementById("totalSales").innerText = count;
+    const qWith = query(collection(db, "withdrawals"), where("status", "==", "pending"));
+    onSnapshot(qWith, (snap) => {
+      const div = document.getElementById("pendingWithdrawsList");
+      div.innerHTML = "";
+      if (snap.empty) {
+        div.innerHTML = "<p style='font-size:13px; color:#64748b;'>Hakuna maombi ya withdraw kwa sasa.</p>";
+        return;
+      }
+      snap.forEach((d) => {
+        const w = d.data();
+        div.innerHTML += `
+          <div class="item-box">
+            <b>Creator:</b> ${w.creatorName} (${w.creatorPhone})<br>
+            <b>Kiasi Anachotoa:</b> <span style="color:#16a34a; font-weight:bold;">TSh ${Number(w.amount).toLocaleString()}</span><br>
+            <button class="btn-green" onclick="markWithdrawPaid('${d.id}')">✔ Nimeshamtumia Pesa (Mark Paid)</button>
+          </div>
+        `;
+      });
+    });
   }
 
-  window.copyMyLink = () => {
-    navigator.clipboard.writeText(personalPayLink);
-    alert("Link yako imenakiliwa! Iweke kwenye post au page yako:\n" + personalPayLink);
+  window.saveSettings = async () => {
+    const paymentDetails = document.getElementById("payDetailsInput").value.trim();
+    const feePercent = Number(document.getElementById("feePercentInput").value);
+    await setDoc(doc(db, "settings", "config"), { paymentDetails, feePercent }, { merge: true });
+    alert("Mipangilio imehifadhiwa!");
   };
 
-  window.requestWithdraw = async () => {
-    const amt = Number(document.getElementById("withdrawAmount").value);
-    if (amt < 1000) return alert("Kiwango cha chini cha kutoa ni TSh 1,000.");
-    if (amt > availableNetBalance) return alert("Salio lako halitoshi!");
-
-    await addDoc(collection(db, "withdrawals"), {
-      creatorPhone: currentPhone,
-      creatorName: currentName,
-      amount: amt,
-      status: "pending",
-      createdAt: Date.now()
-    });
-    document.getElementById("withdrawAmount").value = "";
-    alert("Ombi lako limetumwa! Utatumiwa pesa kwenye namba yako (" + currentPhone + ") muda mfupi ujao.");
-    loadCreatorData();
+  window.verifyPayment = async (id) => {
+    await updateDoc(doc(db, "payments", id), { status: "verified", verifiedAt: Date.now() });
+    alert("Muamala umethibitishwa! Salio limeongezeka kwa creator.");
   };
 
-  if (currentPhone) initDashboard();
+  window.markWithdrawPaid = async (id) => {
+    await updateDoc(doc(db, "withdrawals", id), { status: "paid", paidAt: Date.now() });
+    alert("Malipo ya creator yamerekodiwa kuwa yamekamilika!");
+  };
 </script>
 </body>
 </html>
