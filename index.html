@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUNGUZA SAUTI - Bongo Pesa Link</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { margin: 0; background: #0b0f19; color: #f8fafc; padding: 16px; }
+    .container { max-width: 480px; margin: 0 auto; }
+    .header { text-align: center; padding: 20px 0; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
+    .header h1 { margin: 0; font-size: 24px; color: #38bdf8; letter-spacing: 1px; }
+    .header p { margin: 5px 0 0; font-size: 13px; color: #94a3b8; }
+    .card { background: #1e293b; border-radius: 14px; padding: 18px; margin-bottom: 16px; border: 1px solid #334155; }
+    .card h2 { margin: 0 0 14px; font-size: 16px; color: #e2e8f0; }
+    label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 6px; }
+    input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 15px; margin-bottom: 14px; }
+    input:focus { outline: none; border-color: #38bdf8; }
+    button { width: 100%; padding: 13px; border: none; border-radius: 10px; background: #0284c7; color: #fff; font-weight: 700; font-size: 15px; cursor: pointer; }
+    button:active { opacity: 0.85; }
+    .btn-green { background: #16a34a; }
+    .btn-outline { background: transparent; border: 1px solid #475569; color: #cbd5e1; margin-top: 8px; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .stat-box { background: #0f172a; padding: 14px; border-radius: 10px; text-align: center; border: 1px solid #334155; }
+    .stat-box span { display: block; font-size: 12px; color: #94a3b8; }
+    .stat-box strong { display: block; font-size: 18px; color: #38bdf8; margin-top: 4px; }
+    .link-item { background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #334155; }
+    .link-item h4 { margin: 0 0 6px; font-size: 15px; }
+    .link-item p { margin: 0 0 8px; font-size: 12px; color: #94a3b8; }
+    .copy-btn { padding: 8px; font-size: 13px; background: #334155; }
+    .hidden { display: none; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+    .badge-pending { background: #854d0e; color: #fef08a; }
+    .badge-paid { background: #14532d; color: #bbf7d0; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>PUNGUZA SAUTI</h1>
+    <p>Bongo Pesa Link • Weka Link, Piga Pesa</p>
+  </div>
+
+  <!-- SEHEMU YA KUINGIA (LOGIN) -->
+  <div id="loginSection" class="card">
+    <h2>Ingia Kwenye Akaunti Yako</h2>
+    <label>Jina Lako au Brand Yako</label>
+    <input type="text" id="creatorName" placeholder="Mfano: Juma TV">
+    <label>Namba Yako ya Simu (Ya Kupokea Pesa)</label>
+    <input type="tel" id="creatorPhone" placeholder="Mfano: 0755123456">
+    <button onclick="loginCreator()">Ingia / Fungua Akaunti</button>
+  </div>
+
+  <!-- DASHBOARD YA CREATOR -->
+  <div id="dashboardSection" class="hidden">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 style="margin:0;" id="welcomeText">Karibu</h2>
+        <button onclick="logout()" style="width:auto; padding:6px 12px; font-size:12px; background:#334155;">Toka</button>
+      </div>
+      <div class="stats">
+        <div class="stat-box">
+          <span>Salio Lako (Net)</span>
+          <strong id="netBalance">TSh 0</strong>
+        </div>
+        <div class="stat-box">
+          <span>Waliolipia (Verified)</span>
+          <strong id="totalSales">0</strong>
+        </div>
+      </div>
+      <p style="font-size:12px; color:#94a3b8; margin:0;">Makato ya mfumo: <b id="feeText">15%</b>. Salio linaloonekana tayari limeshakatwa makato.</p>
+    </div>
+
+    <!-- TENGENEZA LINK MPYA -->
+    <div class="card">
+      <h2>+ Tengeneza Link Mpya ya Kulipia</h2>
+      <label>Kichwa cha Video / Maudhui</label>
+      <input type="text" id="videoTitle" placeholder="Mfano: Full Video ya Tukio Zima">
+      <label>Link ya Video Yako (Google Drive, Telegram, YouTube Unlisted n.k.)</label>
+      <input type="url" id="videoUrl" placeholder="https://...">
+      <label>Bei ya Kutazama (TSh)</label>
+      <input type="number" id="videoPrice" placeholder="Mfano: 1000">
+      <button onclick="createVideoLink()">Tengeneza Link ya Malipo</button>
+    </div>
+
+    <!-- OMBA KUTOA PESA (WITHDRAW) -->
+    <div class="card">
+      <h2>Toa Pesa (Withdraw)</h2>
+      <label>Kiasi Unachotoa (TSh)</label>
+      <input type="number" id="withdrawAmount" placeholder="Mfano: 5000">
+      <button class="btn-green" onclick="requestWithdraw()">Omba Kutumiwa Pesa</button>
+      <div id="withdrawHistory" style="margin-top:14px;"></div>
+    </div>
+
+    <!-- LINK ZAKO -->
+    <div class="card">
+      <h2>Link Zako Ulizotengeneza</h2>
+      <div id="myLinksList"><p style="font-size:13px; color:#94a3b8;">Inapakia...</p></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDGO1CbF7SamuFLH2JLczAlOw3uoEwURlg",
+    authDomain: "bongo-pesalink.firebaseapp.com",
+    projectId: "bongo-pesalink",
+    storageBucket: "bongo-pesalink.firebasestorage.app",
+    messagingSenderId: "987154176441",
+    appId: "1:987154176441:web:b13e754ece8996ca737e68"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let currentPhone = localStorage.getItem("bps_phone") || "";
+  let currentName = localStorage.getItem("bps_name") || "";
+  let platformFeePercent = 15;
+  let availableNetBalance = 0;
+
+  window.loginCreator = async () => {
+    const name = document.getElementById("creatorName").value.trim();
+    const phone = document.getElementById("creatorPhone").value.trim().replace(/\s+/g, "");
+    if (!name || phone.length < 9) return alert("Weka jina na namba sahihi ya simu!");
+    localStorage.setItem("bps_phone", phone);
+    localStorage.setItem("bps_name", name);
+    currentPhone = phone;
+    currentName = name;
+    await setDoc(doc(db, "creators", phone), { name, phone, updatedAt: Date.now() }, { merge: true });
+    initDashboard();
+  };
+
+  window.logout = () => {
+    localStorage.removeItem("bps_phone");
+    localStorage.removeItem("bps_name");
+    location.reload();
+  };
+
+  async function loadSettings() {
+    const snap = await getDoc(doc(db, "settings", "config"));
+    if (snap.exists() && snap.data().feePercent !== undefined) {
+      platformFeePercent = Number(snap.data().feePercent);
+    }
+    document.getElementById("feeText").innerText = platformFeePercent + "%";
+  }
+
+  async function initDashboard() {
+    if (!currentPhone) return;
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("dashboardSection").classList.remove("hidden");
+    document.getElementById("welcomeText").innerText = "Habari, " + currentName;
+    await loadSettings();
+    await loadCreatorData();
+  }
+
+  async function loadCreatorData() {
+    // 1. Pakua Link zake
+    const qLinks = query(collection(db, "videos"), where("creatorPhone", "==", currentPhone));
+    const linkSnap = await getDocs(qLinks);
+    const linksDiv = document.getElementById("myLinksList");
+    linksDiv.innerHTML = "";
+    const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1);
+
+    if (linkSnap.empty) {
+      linksDiv.innerHTML = "<p style='font-size:13px; color:#94a3b8;'>Bado hujatengeneza link yoyote.</p>";
+    } else {
+      linkSnap.forEach((d) => {
+        const v = d.data();
+        const shareUrl = `${baseUrl}watch.html?id=${d.id}`;
+        linksDiv.innerHTML += `
+          <div class="link-item">
+            <h4>${v.title}</h4>
+            <p>Bei: TSh ${Number(v.price).toLocaleString()}</p>
+            <button class="copy-btn" onclick="copyShareLink('${shareUrl}')">Nakili (Copy) Link ya Kusambaza</button>
+          </div>
+        `;
+      });
+    }
+
+    // 2. Hesabu Malipo Yaliyohakikiwa (Verified)
+    const qPay = query(collection(db, "payments"), where("creatorPhone", "==", currentPhone), where("status", "==", "verified"));
+    const paySnap = await getDocs(qPay);
+    let grossTotal = 0;
+    let count = 0;
+    paySnap.forEach((p) => {
+      grossTotal += Number(p.data().amount || 0);
+      count++;
+    });
+
+    const netEarned = Math.floor(grossTotal * ((100 - platformFeePercent) / 100));
+
+    // 3. Toa kiasi ambacho kimeshaombwa / kulipwa kwenye Withdraws
+    const qWith = query(collection(db, "withdrawals"), where("creatorPhone", "==", currentPhone));
+    const withSnap = await getDocs(qWith);
+    let withdrawnTotal = 0;
+    const withDiv = document.getElementById("withdrawHistory");
+    withDiv.innerHTML = "";
+
+    withSnap.forEach((w) => {
+      const wd = w.data();
+      if (wd.status !== "rejected") {
+        withdrawnTotal += Number(wd.amount || 0);
+      }
+      const badgeClass = wd.status === "paid" ? "badge-paid" : "badge-pending";
+      const statusText = wd.status === "paid" ? "IMELIPWA" : "INASUBIRI";
+      withDiv.innerHTML += `
+        <div style="display:flex; justify-content:space-between; font-size:13px; padding:8px 0; border-top:1px solid #334155;">
+          <span>TSh ${Number(wd.amount).toLocaleString()}</span>
+          <span class="badge ${badgeClass}">${statusText}</span>
+        </div>
+      `;
+    });
+
+    availableNetBalance = Math.max(0, netEarned - withdrawnTotal);
+    document.getElementById("netBalance").innerText = "TSh " + availableNetBalance.toLocaleString();
+    document.getElementById("totalSales").innerText = count;
+  }
+
+  window.createVideoLink = async () => {
+    const title = document.getElementById("videoTitle").value.trim();
+    const url = document.getElementById("videoUrl").value.trim();
+    const price = Number(document.getElementById("videoPrice").value);
+    if (!title || !url || price < 100) return alert("Jaza taarifa zote kwa usahihi (Bei angalau TSh 100)!");
+
+    await addDoc(collection(db, "videos"), {
+      title,
+      url,
+      price,
+      creatorPhone: currentPhone,
+      creatorName: currentName,
+      createdAt: Date.now()
+    });
+    document.getElementById("videoTitle").value = "";
+    document.getElementById("videoUrl").value = "";
+    document.getElementById("videoPrice").value = "";
+    alert("Link imetengenezwa kikamilifu!");
+    loadCreatorData();
+  };
+
+  window.copyShareLink = (link) => {
+    navigator.clipboard.writeText(link);
+    alert("Link imenakiliwa! Isambaze WhatsApp/Telegram:\n" + link);
+  };
+
+  window.requestWithdraw = async () => {
+    const amt = Number(document.getElementById("withdrawAmount").value);
+    if (amt < 1000) return alert("Kiwango cha chini cha kutoa ni TSh 1,000.");
+    if (amt > availableNetBalance) return alert("Salio lako halitoshi!");
+
+    await addDoc(collection(db, "withdrawals"), {
+      creatorPhone: currentPhone,
+      creatorName: currentName,
+      amount: amt,
+      status: "pending",
+      createdAt: Date.now()
+    });
+    document.getElementById("withdrawAmount").value = "";
+    alert("Ombi lako limetumwa! Utatumiwa pesa kwenye namba yako (" + currentPhone + ") muda mfupi ujao.");
+    loadCreatorData();
+  };
+
+  if (currentPhone) initDashboard();
+</script>
+</body>
+</html>
