@@ -19,15 +19,11 @@
     button { width: 100%; padding: 13px; border: none; border-radius: 10px; background: #0284c7; color: #fff; font-weight: 700; font-size: 15px; cursor: pointer; }
     button:active { opacity: 0.85; }
     .btn-green { background: #16a34a; }
-    .btn-outline { background: transparent; border: 1px solid #475569; color: #cbd5e1; margin-top: 8px; }
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
     .stat-box { background: #0f172a; padding: 14px; border-radius: 10px; text-align: center; border: 1px solid #334155; }
     .stat-box span { display: block; font-size: 12px; color: #94a3b8; }
-    .stat-box strong { display: block; font-size: 18px; color: #38bdf8; margin-top: 4px; }
-    .link-item { background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #334155; }
-    .link-item h4 { margin: 0 0 6px; font-size: 15px; }
-    .link-item p { margin: 0 0 8px; font-size: 12px; color: #94a3b8; }
-    .copy-btn { padding: 8px; font-size: 13px; background: #334155; }
+    .stat-box strong { display: block; font-size: 19px; color: #38bdf8; margin-top: 4px; }
+    .link-box { background: #0f172a; padding: 12px; border-radius: 10px; border: 1px dashed #38bdf8; word-break: break-all; font-size: 13px; color: #38bdf8; margin-bottom: 12px; }
     .hidden { display: none; }
     .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
     .badge-pending { background: #854d0e; color: #fef08a; }
@@ -38,7 +34,7 @@
 <div class="container">
   <div class="header">
     <h1>PUNGUZA SAUTI</h1>
-    <p>Bongo Pesa Link • Weka Link, Piga Pesa</p>
+    <p>Bongo Pesa Link • Weka Link, Pokea Pesa</p>
   </div>
 
   <!-- SEHEMU YA KUINGIA (LOGIN) -->
@@ -54,7 +50,7 @@
   <!-- DASHBOARD YA CREATOR -->
   <div id="dashboardSection" class="hidden">
     <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
         <h2 style="margin:0;" id="welcomeText">Karibu</h2>
         <button onclick="logout()" style="width:auto; padding:6px 12px; font-size:12px; background:#334155;">Toka</button>
       </div>
@@ -64,23 +60,19 @@
           <strong id="netBalance">TSh 0</strong>
         </div>
         <div class="stat-box">
-          <span>Waliolipia (Verified)</span>
+          <span>Waliolipia</span>
           <strong id="totalSales">0</strong>
         </div>
       </div>
-      <p style="font-size:12px; color:#94a3b8; margin:0;">Makato ya mfumo: <b id="feeText">15%</b>. Salio linaloonekana tayari limeshakatwa makato.</p>
+      <p style="font-size:12px; color:#94a3b8; margin:0;">Makato ya mfumo: <b id="feeText">10%</b>. Salio linaloonekana tayari limeshakatwa makato.</p>
     </div>
 
-    <!-- TENGENEZA LINK MPYA -->
+    <!-- LINK YAKO YA MALIPO (MOJA TU) -->
     <div class="card">
-      <h2>+ Tengeneza Link Mpya ya Kulipia</h2>
-      <label>Kichwa cha Video / Maudhui</label>
-      <input type="text" id="videoTitle" placeholder="Mfano: Full Video ya Tukio Zima">
-      <label>Link ya Video Yako (Google Drive, Telegram, YouTube Unlisted n.k.)</label>
-      <input type="url" id="videoUrl" placeholder="https://...">
-      <label>Bei ya Kutazama (TSh)</label>
-      <input type="number" id="videoPrice" placeholder="Mfano: 1000">
-      <button onclick="createVideoLink()">Tengeneza Link ya Malipo</button>
+      <h2>Link Yako ya Kupokea Malipo</h2>
+      <p style="font-size:13px; color:#cbd5e1; margin-top:0;">Nakili link hii na uiweke kwenye page/post zako ili wateja walipie:</p>
+      <div class="link-box" id="myPersonalLink">Inatengeneza link...</div>
+      <button onclick="copyMyLink()">Nakili (Copy) Link Yako</button>
     </div>
 
     <!-- OMBA KUTOA PESA (WITHDRAW) -->
@@ -91,18 +83,12 @@
       <button class="btn-green" onclick="requestWithdraw()">Omba Kutumiwa Pesa</button>
       <div id="withdrawHistory" style="margin-top:14px;"></div>
     </div>
-
-    <!-- LINK ZAKO -->
-    <div class="card">
-      <h2>Link Zako Ulizotengeneza</h2>
-      <div id="myLinksList"><p style="font-size:13px; color:#94a3b8;">Inapakia...</p></div>
-    </div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDGO1CbF7SamuFLH2JLczAlOw3uoEwURlg",
@@ -118,8 +104,9 @@
 
   let currentPhone = localStorage.getItem("bps_phone") || "";
   let currentName = localStorage.getItem("bps_name") || "";
-  let platformFeePercent = 15;
+  let platformFeePercent = 10;
   let availableNetBalance = 0;
+  let personalPayLink = "";
 
   window.loginCreator = async () => {
     const name = document.getElementById("creatorName").value.trim();
@@ -152,35 +139,17 @@
     document.getElementById("loginSection").classList.add("hidden");
     document.getElementById("dashboardSection").classList.remove("hidden");
     document.getElementById("welcomeText").innerText = "Habari, " + currentName;
+
+    const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1);
+    personalPayLink = `${baseUrl}watch.html?c=${encodeURIComponent(currentPhone)}`;
+    document.getElementById("myPersonalLink").innerText = personalPayLink;
+
     await loadSettings();
     await loadCreatorData();
   }
 
   async function loadCreatorData() {
-    // 1. Pakua Link zake
-    const qLinks = query(collection(db, "videos"), where("creatorPhone", "==", currentPhone));
-    const linkSnap = await getDocs(qLinks);
-    const linksDiv = document.getElementById("myLinksList");
-    linksDiv.innerHTML = "";
-    const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1);
-
-    if (linkSnap.empty) {
-      linksDiv.innerHTML = "<p style='font-size:13px; color:#94a3b8;'>Bado hujatengeneza link yoyote.</p>";
-    } else {
-      linkSnap.forEach((d) => {
-        const v = d.data();
-        const shareUrl = `${baseUrl}watch.html?id=${d.id}`;
-        linksDiv.innerHTML += `
-          <div class="link-item">
-            <h4>${v.title}</h4>
-            <p>Bei: TSh ${Number(v.price).toLocaleString()}</p>
-            <button class="copy-btn" onclick="copyShareLink('${shareUrl}')">Nakili (Copy) Link ya Kusambaza</button>
-          </div>
-        `;
-      });
-    }
-
-    // 2. Hesabu Malipo Yaliyohakikiwa (Verified)
+    // 1. Hesabu Malipo Yaliyohakikiwa (Verified)
     const qPay = query(collection(db, "payments"), where("creatorPhone", "==", currentPhone), where("status", "==", "verified"));
     const paySnap = await getDocs(qPay);
     let grossTotal = 0;
@@ -192,7 +161,7 @@
 
     const netEarned = Math.floor(grossTotal * ((100 - platformFeePercent) / 100));
 
-    // 3. Toa kiasi ambacho kimeshaombwa / kulipwa kwenye Withdraws
+    // 2. Toa kiasi ambacho kimeshaombwa / kulipwa kwenye Withdraws
     const qWith = query(collection(db, "withdrawals"), where("creatorPhone", "==", currentPhone));
     const withSnap = await getDocs(qWith);
     let withdrawnTotal = 0;
@@ -219,30 +188,9 @@
     document.getElementById("totalSales").innerText = count;
   }
 
-  window.createVideoLink = async () => {
-    const title = document.getElementById("videoTitle").value.trim();
-    const url = document.getElementById("videoUrl").value.trim();
-    const price = Number(document.getElementById("videoPrice").value);
-    if (!title || !url || price < 100) return alert("Jaza taarifa zote kwa usahihi (Bei angalau TSh 100)!");
-
-    await addDoc(collection(db, "videos"), {
-      title,
-      url,
-      price,
-      creatorPhone: currentPhone,
-      creatorName: currentName,
-      createdAt: Date.now()
-    });
-    document.getElementById("videoTitle").value = "";
-    document.getElementById("videoUrl").value = "";
-    document.getElementById("videoPrice").value = "";
-    alert("Link imetengenezwa kikamilifu!");
-    loadCreatorData();
-  };
-
-  window.copyShareLink = (link) => {
-    navigator.clipboard.writeText(link);
-    alert("Link imenakiliwa! Isambaze WhatsApp/Telegram:\n" + link);
+  window.copyMyLink = () => {
+    navigator.clipboard.writeText(personalPayLink);
+    alert("Link yako imenakiliwa! Iweke kwenye post au page yako:\n" + personalPayLink);
   };
 
   window.requestWithdraw = async () => {
